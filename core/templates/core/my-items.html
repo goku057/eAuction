@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Index Page {% endblock %}
+{% block title %} My Items Page {% endblock %}
 
 
 {% block content %}
@@ -11,20 +11,20 @@
 
 <div class="row">
     {% for item in items %}
-    <div class="col-12 col-md-3 mb-3">
+    <div class="col-3 mb-3">
         <div class="card" style="width: 18rem;">
             <img src="{{ item.image.url }}" style="max-height: 300px;" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">{{ item.name }}</h5>
                 <p class="card-text">{{ item.description }}</p>
                 <p>Minimum Bid Price: {{ item.min_bid_price }}</p>
+
                 {% if currentDateTime.date >= item.auction_end_datetime.date and currentDateTime.time > item.auction_end_datetime.time%}
                 <p>Status: <span class="text-danger">Ended</span></p>
                 {% else %}
                 <p>Status: <span class="text-success">Ongoing</span></p>
                 <p>Auction ends in {{ item.auction_end_datetime }}</p>
                 {% endif%}
-                <p>Posted By: {{ item.created_by.email }}</p>
                 <a href="{% url 'item-details' item.id %}" class="btn btn-primary">Go to Auction</a>
             </div>
         </div>

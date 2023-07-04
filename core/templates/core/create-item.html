@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %} Index Page {% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex justify-content-center mb-4">
+    <h1>Create your item</h1>
+</div>
+
+<div class="d-flex justify-content-center">
+    <form method="post" action="/create-item" enctype="multipart/form-data">
+        {% csrf_token %}
+    
+        <div class="">
+            {{ form.as_p }}
+        </div>
+    
+        {% if form.errors or form.non_field_errors %}
+            <div class="">
+                {% for field in form %}
+                    {{ field.errors }}
+                {% endfor %}
+    
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+    
+        <button class="btn btn-success">Submit</button>
+    </form>
+</div>
+{% endblock %} 
