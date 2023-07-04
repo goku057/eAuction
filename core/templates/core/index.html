@@ -6,7 +6,7 @@
 {% block content %}
 
 <div class="d-flex justify-content-center mb-4">
-    <h1>Auction items that are going on</h1>
+    <h1>Auction items </h1>
 </div>
 
 <div class="row">
@@ -18,12 +18,16 @@
                 <h5 class="card-title">{{ item.name }}</h5>
                 <p class="card-text">{{ item.description }}</p>
                 <p>Minimum Bid Price: {{ item.min_bid_price }}</p>
-                {% if currentDateTime.date >= item.auction_end_datetime.date and currentDateTime.time > item.auction_end_datetime.time%}
-                <p>Status: <span class="text-danger">Ended</span></p>
+                
+                {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+                    <p>Status: <span class="text-success">Ongoing</span></p>
+                    <p>Auction ends in {{ item.auction_end_datetime }}</p>
                 {% else %}
-                <p>Status: <span class="text-success">Ongoing</span></p>
-                <p>Auction ends in {{ item.auction_end_datetime }}</p>
-                {% endif%}
+                    <p>Status: <span class="text-danger">Ended</span></p>
+                    <p>Auction ended in {{ item.auction_end_datetime }}</p>
+                {% endif %}
+                
+                
                 <p>Posted By: {{ item.created_by.email }}</p>
                 <a href="{% url 'item-details' item.id %}" class="btn btn-primary">Go to Auction</a>
             </div>

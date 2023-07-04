@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from .models import GeneralUser, Item
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import GeneralUser, Item, Bid
 from .helper import GENERAL_USER_EMAIL, GENERAL_USER_ID
 from .forms import NewItemForm
 from datetime import datetime
@@ -60,7 +60,7 @@ def create(req):
             generalUser = GeneralUser.objects.get(id = req.session.get(GENERAL_USER_ID, None))
             item.created_by = generalUser
             item.save()
-            return redirect('/', pk=item.id)
+            return redirect('/')
         
     
     form = NewItemForm()
@@ -90,7 +90,7 @@ def showMyItems(req):
     currentDateTime = datetime.now()
     currentUser = GeneralUser.objects.get(id = generalUserID)
     currentDateTime = datetime.now()
-    items = Item.objects.filter(created_by = currentUser)
+    items = Item.objects.filter(created_by = currentUser).order_by('-id')
     data = {
         'userInfo' : {
             'id' : generalUserID,
@@ -105,22 +105,66 @@ def showMyItems(req):
     
 
 def itemDetails(req, id):
-    print(id)
+    
     generalUserEmail = req.session.get(GENERAL_USER_EMAIL, None)
     generalUserID = req.session.get(GENERAL_USER_ID, None)
     if generalUserEmail == None :
         return render(req, 'login.html')
     
+
+    if req.method == 'POST':
+        bidItem = Item.objects.get(id = id)
+        bidUser = GeneralUser.objects.get(id = generalUserID)
+        bidAmount = req.POST['bidAmount']
+        
+        bid = Bid()
+        bid.item = bidItem
+        bid.bid_by = bidUser
+        bid.bid_amount = bidAmount
+        bid.save()
+
+        return redirect('item-details', id=id)
+
     currentDateTime = datetime.now()
-    currentUser = GeneralUser.objects.get(id = generalUserID)
     currentDateTime = datetime.now()
-    items = Item.objects.filter(created_by = currentUser)
+    item = get_object_or_404(Item, id=id)
+    bids = Bid.objects.filter(item = item).order_by('-bid_amount')
+    userAlreadyBid = False
+    bidWinner = Bid.objects.filter(item = item).order_by('-bid_amount').first()
+
+    for b in bids:
+        if b.bid_by.id == generalUserID:
+            userAlreadyBid = True
+            break
+    
+    # item = Item.objects.get(id = id)
     data = {
         'userInfo' : {
             'id' : generalUserID,
             'email' : generalUserEmail
         },
-        'items' : items,
-        'currentDateTime' : currentDateTime
+        'item' : item,
+        'currentDateTime' : currentDateTime,
+        'userAlreadyBid' : userAlreadyBid,
+        'bids' : bids,
+        'bidWinner' : bidWinner
     }
     return render(req, 'core/item-details.html', data)
+
+
+def itemBidEdit(req, id):
+    generalUserEmail = req.session.get(GENERAL_USER_EMAIL, None)
+    generalUserID = req.session.get(GENERAL_USER_ID, None)
+    if generalUserEmail == None :
+        return render(req, 'login.html')
+    
+
+    if req.method == 'POST':
+        bidID = req.POST['bidID']
+        bidAmount = req.POST['bidAmount']
+        
+        bid = Bid.objects.get(id = bidID)
+        bid.bid_amount = bidAmount
+        bid.save()
+
+        return redirect('item-details', id=id)

@@ -10,5 +10,5 @@ urlpatterns = [
     path("create-item", views.create, name='create-item'),
     path("my-posted-items", views.showMyItems, name='my-posted-items'),
     path("item-details/<int:id>", views.itemDetails, name='item-details'),
-    
+    path("item-bid-edit/<int:id>", views.itemBidEdit, name='item-bid-edit'),
 ]

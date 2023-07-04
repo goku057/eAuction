@@ -9,13 +9,141 @@
     <h1>Item Details</h1>
 </div>
 
+<!-- item details start -->
 <div class="row">
-    <div class="col-12 col-md-6">
-        <img src="" alt="">
+    <div class="col-12 col-md-6 d-flex justify-content-center">
+        <img src="{{ item.image.url }}" height="400px" width="400px" alt="">
     </div>
     <div class="col-12 col-md-6">
-        <h3>This is name</h3>
+        <h2>{{ item.name }}</h2>
+        <p>{{ item.description }}</p>
+        <p>{{ item.min_bid_price }}</p>
+
+        {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+            <p>Status: <span class="text-success">Ongoing</span></p>
+            <p>Auction ends in {{ item.auction_end_datetime }}</p>
+        {% else %}
+            <p>Status: <span class="text-danger">Ended</span></p>
+            <p>Auction ended in {{ item.auction_end_datetime }}</p>
+        {% endif %}
+        
+        <p>End Date: {{ item.auction_end_datetime }}</p>
+        <p>Posted By: {{ item.created_by.email }}</p>
     </div>
 </div>
+
+<!-- item details end -->
+
+
+<!-- announcing bid winner start -->
+
+{% if currentDateTime|date:"Y-m-d H:i:s" > item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+    {% if bidWinner != None%}
+    <h1 class="text-success m-4"> The bid winner is {{ bidWinner.bid_by.email }}</h1>
+    {% endif %}
+{% endif %}
+<!-- announcing bid winner end -->
+
+
+<!-- bid form start -->
+{% if item.created_by.id != userInfo.id and userAlreadyBid == False %}
+    
+    {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+        <div class="row mt-3">
+            <div class="col-12 d-flex justify-content-center">
+                <form action="{% url 'item-details' item.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" value="{{ item.min_bid_price }}" min="{{ item.min_bid_price }}" name="bidAmount" id="">
+                    <button class="btn btn-success" type="submit">Bid</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}    
+{% endif %}
+<!-- bid form end -->
+
+<!-- bid list start -->
+<div class="row mt-3">
+
+    <div class="col-12 d-flex justify-content-center">
+        {% if bids|length == 0 %}
+            <h3>No one Bidded</h3>
+        {% else %}
+
+
+
+        <!-- edit form for bid start-->
+        {% for bid in bids %}
+            {% if bid.bid_by.email == userInfo.email %}
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Bid</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <form action="{% url 'item-bid-edit' item.id%}" method="post" id="editBid">
+                        {% csrf_token %}
+                        <input type="hidden" name="bidID" value="{{ bid.id}}" required>
+                        <input type="number" required name="bidAmount" placeholder="enter amount" value="{{bid.bid_amount}}" min="{{item.min_bid_price}}" id="">
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="editBid" class="btn btn-success">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        <!-- end edit form for bid -->
+
+        <table class="table table-danger table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">Bidding Price</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for bid in bids %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ bid.bid_by.email }}</td>
+                <td>{{ bid.bid_amount }}</td>
+                {% if bid.bid_by.email == userInfo.email %}
+                <td>
+                    
+                    {% if currentDateTime.date > item.auction_end_datetime.date%}
+                        <!-- do nothing -->
+                    {% else %}
+                        {% if currentDateTime.time > item.auction_end_datetime.time%}
+                        <!-- do nothing -->
+                        {% else %}
+                            
+                        {% endif %}
+                    {% endif %}
+                    {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Edit</button>
+                    {% endif %}
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        {% endif%}
+    </div>
+</div>
+
+<!-- bid list end -->
+
+
 
 {% endblock %}
