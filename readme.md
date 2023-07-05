@@ -1,6 +1,9 @@
 # Live website
 http://aridoanah.pythonanywhere.com/
 
+admin panel username: admin
+password: admin
+
 # Video Link
 
 https://drive.google.com/file/d/15x0GU-dyWnM3ciKo7evlnxrTvCeBcUd2/view?usp=sharing
