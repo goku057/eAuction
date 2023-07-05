@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'admin-base.html' %}
 
-{% block title %} My Items Page {% endblock %}
+{% block title %}  Gallery {% endblock %}
 
 
 {% block content %}
 
 <div class="d-flex justify-content-center mb-4">
-    <h1>My Items</h1>
+    <h1>Auction Items</h1>
 </div>
 
 <div class="row">
@@ -17,7 +17,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ item.name }}</h5>
                 <p class="card-text">{{ item.description }}</p>
-                <p>Minimum Bid Price: {{ item.min_bid_price }} TK</p>
+                <p>Minimum Bid Price: {{ item.min_bid_price }}</p>
 
                 {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
                     <p>Status: <span class="text-success">Ongoing</span></p>
@@ -27,14 +27,13 @@
                     <p>Auction ended in {{ item.auction_end_datetime }}</p>
                 {% endif %}
 
-                <a href="{% url 'item-details' item.id %}" class="btn btn-primary">Go to Auction</a>
-                <a href="{% url 'item-delete' item.id %}" onclick="return confirm('are you sure you want to delete?')" class="btn btn-danger">Delete</a>
+                <a href="{% url 'auction-item-details' item.id %}" class="btn btn-primary">Go to Auction</a>
+                
                 
             </div>
         </div>
     </div>
     {% endfor %}
-
 
 
 </div>

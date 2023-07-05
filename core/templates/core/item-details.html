@@ -17,7 +17,7 @@
     <div class="col-12 col-md-6">
         <h2>{{ item.name }}</h2>
         <p>{{ item.description }}</p>
-        <p>{{ item.min_bid_price }}</p>
+        <p>Minimum Bid Price: {{ item.min_bid_price }} TK</p>
 
         {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
             <p>Status: <span class="text-success">Ongoing</span></p>
@@ -117,16 +117,6 @@
                 <td>{{ bid.bid_amount }}</td>
                 {% if bid.bid_by.email == userInfo.email %}
                 <td>
-                    
-                    {% if currentDateTime.date > item.auction_end_datetime.date%}
-                        <!-- do nothing -->
-                    {% else %}
-                        {% if currentDateTime.time > item.auction_end_datetime.time%}
-                        <!-- do nothing -->
-                        {% else %}
-                            
-                        {% endif %}
-                    {% endif %}
                     {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Edit</button>

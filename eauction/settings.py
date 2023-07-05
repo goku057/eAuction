@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/admin/'
+
 
 # Application definition
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'adminpanel'
 ]
 
 MIDDLEWARE = [
@@ -75,13 +78,17 @@ WSGI_APPLICATION = 'eauction.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "NAME": "eauction",
+    #     "USER": "root",
+    #     "PASSWORD": "",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "3306",
+    # }
     'default': {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "eauction",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

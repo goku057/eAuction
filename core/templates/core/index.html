@@ -17,7 +17,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ item.name }}</h5>
                 <p class="card-text">{{ item.description }}</p>
-                <p>Minimum Bid Price: {{ item.min_bid_price }}</p>
+                <p>Minimum Bid Price: {{ item.min_bid_price }} TK</p>
                 
                 {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
                     <p>Status: <span class="text-success">Ongoing</span></p>

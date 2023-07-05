@@ -1,0 +1,33 @@
+{% extends 'admin-base.html' %}
+
+{% block title %} Dashboard {% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex justify-content-center mb-4">
+    <h1>Admin Dashboard </h1>
+</div>
+
+<div class="row">
+
+    <div class="col-12 col-md-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Running Auction</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ runningAuctionItemCount }}</h6>
+            </div>
+          </div>
+    </div>
+
+    <div class="col-12 col-md-3">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Total Value</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ totalBidValue }} TK</h6>
+            </div>
+          </div>
+    </div>
+</div>
+
+{% endblock %}

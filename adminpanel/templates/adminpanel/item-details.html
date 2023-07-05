@@ -1,0 +1,85 @@
+{% extends 'admin-base.html' %}
+
+{% block title %} Item details page {% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex justify-content-center mb-4">
+    <h1>Item Details</h1>
+</div>
+
+<!-- item details start -->
+<div class="row">
+    <div class="col-12 col-md-6 d-flex justify-content-center">
+        <img src="{{ item.image.url }}" height="400px" width="400px" alt="">
+    </div>
+    <div class="col-12 col-md-6">
+        <h2>{{ item.name }}</h2>
+        <p>{{ item.description }}</p>
+        <p>{{ item.min_bid_price }}</p>
+
+        {% if currentDateTime|date:"Y-m-d H:i:s" <= item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+            <p>Status: <span class="text-success">Ongoing</span></p>
+            <p>Auction ends in {{ item.auction_end_datetime }}</p>
+        {% else %}
+            <p>Status: <span class="text-danger">Ended</span></p>
+            <p>Auction ended in {{ item.auction_end_datetime }}</p>
+        {% endif %}
+        
+        <p>End Date: {{ item.auction_end_datetime }}</p>
+        <p>Posted By: {{ item.created_by.email }}</p>
+    </div>
+</div>
+
+<!-- item details end -->
+
+
+<!-- announcing bid winner start -->
+
+{% if currentDateTime|date:"Y-m-d H:i:s" > item.auction_end_datetime|date:"Y-m-d H:i:s" %}
+    {% if bidWinner != None%}
+    <h1 class="text-success m-4"> The bid winner is {{ bidWinner.bid_by.email }}</h1>
+    {% endif %}
+{% endif %}
+<!-- announcing bid winner end -->
+
+
+
+
+<!-- bid list start -->
+<div class="row mt-3">
+
+    <div class="col-12 d-flex justify-content-center">
+        {% if bids|length == 0 %}
+            <h3>No one Bidded</h3>
+        {% else %}
+
+        <table class="table table-danger table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">Bidding Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for bid in bids %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ bid.bid_by.email }}</td>
+                <td>{{ bid.bid_amount }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        {% endif%}
+    </div>
+</div>
+
+<!-- bid list end -->
+
+
+
+{% endblock %}

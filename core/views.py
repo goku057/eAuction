@@ -87,7 +87,6 @@ def showMyItems(req):
     if generalUserEmail == None : 
         return render(req, 'login.html')
     
-    currentDateTime = datetime.now()
     currentUser = GeneralUser.objects.get(id = generalUserID)
     currentDateTime = datetime.now()
     items = Item.objects.filter(created_by = currentUser).order_by('-id')
@@ -125,7 +124,6 @@ def itemDetails(req, id):
 
         return redirect('item-details', id=id)
 
-    currentDateTime = datetime.now()
     currentDateTime = datetime.now()
     item = get_object_or_404(Item, id=id)
     bids = Bid.objects.filter(item = item).order_by('-bid_amount')
@@ -168,3 +166,10 @@ def itemBidEdit(req, id):
         bid.save()
 
         return redirect('item-details', id=id)
+    
+
+def itemDelete(req, id):
+    item = get_object_or_404(Item, id=id)
+    item.delete()
+
+    return redirect('/my-posted-items')
