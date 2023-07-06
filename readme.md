@@ -1,7 +1,7 @@
 # Live website
 http://aridoanah.pythonanywhere.com/
 
-admin panel username: admin
+admin panel endpoint: /admin  username: admin
 password: admin
 
 # Video Link
